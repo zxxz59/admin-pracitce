@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!--以及路由占位符 -->
     <router-view></router-view>
   </div>
 </template>
@@ -12,7 +11,7 @@ export default {
   data() {
     return {}
   },
-  created() { },
+  created() {},
   methods: {},
   computed: {},
   watch: {}

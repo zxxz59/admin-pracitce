@@ -75,13 +75,13 @@ export default {
     async loginFn() {
       try {
         await this.$refs.loginForm.validate()
-        // TODO
-        const a = await loginAPI(this.ruleForm)
-        console.log(a)
+        const UserInfo = await loginAPI(this.ruleForm)
+        this.$store.commit('user/updateSetToken', UserInfo.token)
+        this.$store.commit('user/setUserInfo', UserInfo)
         this.$router.push('/home')
         this.$message.success('登录成功')
       } catch (error) {
-        this.$message.error('error')
+        this.$message.error(error)
       }
     },
     reset() {

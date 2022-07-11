@@ -4,6 +4,11 @@
       <template #two>用户管理</template>
       <template #three>用户列表</template>
     </BreadCrumb>
+    <el-image
+      style="width: 100px; height: 100px"
+      :src="require('@/assets/image/welcome.jpg')"
+      :fit="fit"
+    ></el-image>
   </div>
 </template>
 

@@ -12,7 +12,12 @@
           </el-col>
           <el-col :span="8">
             <el-row type="flex" align="middle" justify="end">
-              <el-button type="danger" size="samll">退出</el-button>
+              <el-col :span="4">
+                {{ username }}
+              </el-col>
+              <el-col :span="4">
+                <el-button type="danger" size="samll">退出</el-button>
+              </el-col>
             </el-row>
           </el-col>
         </el-row>
@@ -29,6 +34,7 @@
 
 <script>
 import AsideIndex from './components/aside-index.vue'
+import { mapGetters } from 'vuex'
 export default {
   name: 'HomeIndex',
   components: { AsideIndex },
@@ -39,7 +45,9 @@ export default {
   created() { },
   methods: {
   },
-  computed: {},
+  computed: {
+    ...mapGetters(['username'])
+  },
   watch: {}
 }
 </script>
