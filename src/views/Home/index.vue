@@ -19,7 +19,9 @@
       </el-header>
       <el-container>
         <aside-index />
-        <el-main>Main</el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -32,17 +34,10 @@ export default {
   components: { AsideIndex },
   data() {
     return {
-
     }
   },
   created() { },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath)
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath)
-    }
   },
   computed: {},
   watch: {}

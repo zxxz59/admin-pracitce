@@ -20,11 +20,11 @@
     <el-menu
       default-active="1-4-1"
       class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose"
       :collapse="isCollapse"
       :collapse-transition="false"
       background-color="#dcdcdc"
+      unique-opened
+      router
     >
       <el-submenu index="1">
         <template slot="title">
@@ -32,9 +32,9 @@
           <span slot="title">用户管理</span>
         </template>
         <el-menu-item-group>
-          <el-menu-item index="1-1">
+          <el-menu-item index="/home/user">
             <i class="el-icon-menu"></i>
-            选项1
+            用户列表
           </el-menu-item>
         </el-menu-item-group>
       </el-submenu>

@@ -97,7 +97,7 @@ export default {
 .login-container {
   width: 100vw;
   height: 100vh;
-  background: url('@/assets/image/run.jpg') no-repeat 0 0/100vw 100vh ;
+  background: url('@/assets/image/run.jpg') no-repeat 0 0/100vw 100vh;
   display: flex;
   justify-content: center;
   align-items: center;

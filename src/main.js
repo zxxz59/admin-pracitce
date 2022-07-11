@@ -6,6 +6,11 @@ import ElementUI from 'element-ui'
 import '@/style/index.scss'
 import 'element-ui/lib/theme-chalk/index.css'
 
+import adminComponent from '@/components'
+Object.keys(adminComponent).forEach((key) => {
+  Vue.component(key, adminComponent[key])
+})
+
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 
