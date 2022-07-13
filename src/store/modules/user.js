@@ -1,3 +1,4 @@
+import router from '@/router'
 const state = {
   token: null,
   userInfo: {}
@@ -20,6 +21,7 @@ const actions = {
   async logout(context) {
     context.commit('updateRemoveToken')
     context.commit('removesUserInfo')
+    router.push({ name: 'login' })
   }
 }
 

@@ -16,7 +16,9 @@
                 {{ username }}
               </el-col>
               <el-col :span="4">
-                <el-button type="danger" size="samll">退出</el-button>
+                <el-button type="danger" size="samll" @click="logout"
+                  >退出</el-button
+                >
               </el-col>
             </el-row>
           </el-col>
@@ -39,11 +41,13 @@ export default {
   name: 'HomeIndex',
   components: { AsideIndex },
   data() {
-    return {
-    }
+    return {}
   },
-  created() { },
+  created() {},
   methods: {
+    logout() {
+      this.$store.dispatch('user/logout')
+    }
   },
   computed: {
     ...mapGetters(['username'])
@@ -52,7 +56,7 @@ export default {
 }
 </script>
 
-<style scoped lang='scss'>
+<style scoped lang="scss">
 .home-container {
   height: 100vh;
 
