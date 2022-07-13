@@ -12,7 +12,8 @@ const service = axios.create({
 service.interceptors.request.use(
   (config) => {
     if (store.getters.token) {
-      config.headers.Authorization = `Bearer ${store.getters.token}`
+      // 这个项目自带Bearer
+      config.headers.Authorization = `${store.getters.token}`
     }
     return config
   },

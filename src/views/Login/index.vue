@@ -75,9 +75,7 @@ export default {
     async loginFn() {
       try {
         await this.$refs.loginForm.validate()
-        const UserInfo = await loginAPI(this.ruleForm)
-        this.$store.commit('user/updateSetToken', UserInfo.token)
-        this.$store.commit('user/setUserInfo', UserInfo)
+        this.$store.dispatch('user/login', this.ruleForm)
         this.$router.push('/home')
         this.$message.success('登录成功')
       } catch (error) {

@@ -1,14 +1,18 @@
 import router from '@/router'
+import { setToken, getToken, removeToken } from '@/utils/auth'
+import { loginAPI } from '@/api/user'
 const state = {
-  token: null,
+  token: getToken(),
   userInfo: {}
 }
 const mutations = {
   updateSetToken(state, payload) {
     state.token = payload
+    setToken(payload)
   },
   updateRemoveToken(state) {
     state.token = null
+    removeToken()
   },
   setUserInfo(state, payload) {
     state.userInfo = payload
@@ -18,6 +22,15 @@ const mutations = {
   }
 }
 const actions = {
+  async login(context, data) {
+    try {
+      const info = await loginAPI(data)
+      context.commit('updateSetToken', info.token)
+      context.commit('setUserInfo', info)
+    } catch (error) {
+      console.log(error)
+    }
+  },
   async logout(context) {
     context.commit('updateRemoveToken')
     context.commit('removesUserInfo')
