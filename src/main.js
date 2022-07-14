@@ -7,7 +7,7 @@ import '@/style/index.scss'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/permission'
 
-import adminComponent from '@/components'
+import * as adminComponent from '@/components'
 Object.keys(adminComponent).forEach((key) => {
   Vue.component(key, adminComponent[key])
 })

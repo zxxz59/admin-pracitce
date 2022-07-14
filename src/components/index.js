@@ -1,6 +1,3 @@
 // 注册全局组件
-const adminComponent = {
-  BreadCrumb: () => import('@/components/bread-crumb.vue')
-}
-
-export default adminComponent
+export const BreadCrumb = () => import('@/components/bread-crumb.vue')
+export const MyCard = () => import('@/components/my-card.vue')
