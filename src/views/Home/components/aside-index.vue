@@ -1,5 +1,5 @@
 <template>
-  <el-aside :width="isCollapse ? '63px' : '300px'">
+  <el-aside :width="isCollapse ? '63px' : '240px'">
     <el-button
       class="topBtn"
       type="primary"

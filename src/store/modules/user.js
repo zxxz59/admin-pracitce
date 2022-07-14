@@ -7,8 +7,8 @@ const state = {
 }
 const mutations = {
   updateSetToken(state, payload) {
-    state.token = payload
     setToken(payload)
+    state.token = payload
   },
   updateRemoveToken(state) {
     state.token = null

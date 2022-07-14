@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import { loginAPI } from '@/api/user'
 export default {
   name: '',
   components: {},
@@ -70,12 +69,12 @@ export default {
       }
     }
   },
-  created() { },
+  created() {},
   methods: {
     async loginFn() {
       try {
         await this.$refs.loginForm.validate()
-        this.$store.dispatch('user/login', this.ruleForm)
+        await this.$store.dispatch('user/login', this.ruleForm)
         this.$router.push('/home')
         this.$message.success('登录成功')
       } catch (error) {
