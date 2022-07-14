@@ -1,20 +1,18 @@
 <template>
   <div>
-    <BreadCrumb>
-      <template #two>用户管理</template>
-      <template #three>用户列表</template>
-    </BreadCrumb>
+    <BreadCrumb :bread="$route" />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'UsersIndex',
+  name: 'UserIndex',
   components: {},
   data() {
     return {}
   },
   created() {},
+
   methods: {},
   computed: {},
   watch: {}

@@ -28,7 +28,8 @@ const constantRoutes = [
         component: () => import('@/views/Users'),
         name: 'users',
         meta: {
-          title: '用户',
+          title: '用户列表',
+          before: '用户管理',
           icon: 'el-icon-user-solid'
         }
       }
