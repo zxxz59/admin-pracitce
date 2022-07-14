@@ -1,15 +1,12 @@
 <template>
   <div>
-    <BreadCrumb>
-      <template #two>用户管理</template>
-      <template #three>用户列表</template>
-    </BreadCrumb>
+    <h2>未建设</h2>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'UserIndex',
+  name: '',
   components: {},
   data() {
     return {}

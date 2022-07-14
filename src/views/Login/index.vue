@@ -75,8 +75,10 @@ export default {
       try {
         await this.$refs.loginForm.validate()
         await this.$store.dispatch('user/login', this.ruleForm)
-        this.$router.push('/home')
-        this.$message.success('登录成功')
+        if (this.$store.getters.token) {
+          this.$router.push('/welcome')
+          this.$message.success('登录成功')
+        }
       } catch (error) {
         this.$message.error(error)
       }

@@ -29,8 +29,9 @@ service.interceptors.response.use(
     if (meta.status === 200 || meta.status === 201 || meta.status === 204) {
       return data
     } else {
-      Message.error('操作失败')
-      return Promise.reject(new Error('操作失败'))
+      console.log(meta)
+      Message.error(meta.msg)
+      return Promise.reject(new Error(meta.msg))
     }
   },
   (error) => {
