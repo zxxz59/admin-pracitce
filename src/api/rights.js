@@ -9,3 +9,9 @@ export function rightsListAPI() {
     url: 'rights/list'
   })
 }
+
+export function roleListAPI() {
+  return request({
+    url: 'roles'
+  })
+}

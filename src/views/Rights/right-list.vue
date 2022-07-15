@@ -7,6 +7,7 @@
         style="width: 100%"
         :row-class-name="tableRowClassName"
         border
+        v-loading="loading"
       >
         <el-table-column type="index" label="#" width="50"> </el-table-column>
         <el-table-column prop="authName" label="权限名称" width="300">
@@ -36,6 +37,7 @@
           }
         "
       >
+        <i class="el-icon-caret-top"></i>
         up
       </div>
     </el-backtop>
@@ -49,7 +51,8 @@ export default {
   components: {},
   data() {
     return {
-      rightsData: []
+      rightsData: [],
+      loading: false
     }
   },
   created() {
@@ -63,10 +66,13 @@ export default {
       return ''
     },
     async rightsList() {
+      this.loading = true
       try {
         this.rightsData = await rightsListAPI()
+        this.loading = false
       } catch (error) {
         console.log(error)
+        this.loading = false
       }
     }
   },
@@ -76,11 +82,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-::v-deep.el-table .warning-row {
+:deep(.el-table .warning-row) {
   background: oldlace;
 }
 
-::v-deep .el-table .success-row {
+:deep(.el-table .success-row) {
   background: #f0f9eb;
 }
 </style>

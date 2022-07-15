@@ -356,11 +356,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-::v-deep.el-table .warning-row {
+:deep(.el-table .warning-row) {
   background: oldlace;
 }
 
-::v-deep .el-table .success-row {
+:deep(.el-table .success-row) {
   background: #f0f9eb;
 }
 </style>
