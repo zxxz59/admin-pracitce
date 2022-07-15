@@ -84,3 +84,27 @@ export function editUserAPI(data) {
     data
   })
 }
+/**
+ *
+ * @param {*} id
+ * @分配用户角色
+ */
+export function assignRoleAPI(data) {
+  return request({
+    method: 'put',
+    url: `users/${data.id}/role`,
+    data
+  })
+}
+
+/**
+ *
+ * @param {*} id
+ * @分配用户角色
+ */
+export function getRoleListAPI() {
+  return request({
+    method: 'get',
+    url: 'roles'
+  })
+}

@@ -164,9 +164,10 @@ import {
   delUserAPI,
   addUserAPI,
   editUserAPI,
-  getUserAPI
+  getUserAPI,
+  assignRoleAPI,
+  getRoleListAPI
 } from '@/api/user'
-import { assignRoleAPI, getRoleListAPI } from '@/api/role'
 export default {
   name: 'UserIndex',
   components: {},
