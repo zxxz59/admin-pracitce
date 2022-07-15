@@ -31,6 +31,7 @@
             border
             style="width: 100%; margin-top: 20px"
             v-loading="loading"
+            :row-class-name="tableRowClassName"
           >
             <el-table-column type="index" label="#" width="50">
             </el-table-column>
@@ -340,6 +341,12 @@ export default {
     },
     searchBtn() {
       this.getUsersList()
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (rowIndex % 2 === 0) {
+        return 'warning-row'
+      }
+      return ''
     }
   },
   computed: {},
@@ -347,4 +354,12 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+::v-deep.el-table .warning-row {
+  background: oldlace;
+}
+
+::v-deep .el-table .success-row {
+  background: #f0f9eb;
+}
+</style>
