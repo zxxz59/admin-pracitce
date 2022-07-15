@@ -4,7 +4,7 @@ const rightsRouter = {
   children: [
     {
       path: 'rights',
-      component: () => import('@/views/test'),
+      component: () => import('@/views/Rights/right-list.vue'),
       name: 'rights',
       meta: {
         title: '权限管理',
@@ -13,7 +13,7 @@ const rightsRouter = {
     },
     {
       path: 'roles',
-      component: () => import('@/views/test'),
+      component: () => import('@/views/Rights/role-list.vue'),
       name: 'roles'
     }
   ]
