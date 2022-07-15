@@ -48,3 +48,39 @@ export function delUserAPI(id) {
     url: `users/${id}`
   })
 }
+/**
+ *
+ * @param {*} data
+ * @添加新用户
+ */
+export function addUserAPI(data) {
+  return request({
+    method: 'post',
+    url: 'users',
+    data
+  })
+}
+/**
+ *
+ * @param {*} id
+ * @根据ID查询用户信息
+ */
+export function getUserAPI(id) {
+  return request({
+    method: 'get',
+    url: `users/${id}`
+  })
+}
+
+/**
+ *
+ * @param {*} id
+ * @根据ID查询用户信息
+ */
+export function editUserAPI(data) {
+  return request({
+    method: 'put',
+    url: `users/${data.id}`,
+    data
+  })
+}

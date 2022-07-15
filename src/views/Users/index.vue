@@ -32,13 +32,13 @@
             style="width: 100%; margin-top: 20px"
             v-loading="loading"
           >
-            <el-table-column type="index" label="#" width="180">
+            <el-table-column type="index" label="#" width="50">
             </el-table-column>
             <el-table-column prop="username" label="姓名" width="180">
             </el-table-column>
             <el-table-column prop="mobile" label="电话"> </el-table-column>
             <el-table-column prop="role_name" label="角色"> </el-table-column>
-            <el-table-column prop="mg_state" label="状态">
+            <el-table-column prop="mg_state" label="状态" width="150">
               <template v-slot="{ row }">
                 <el-switch
                   v-model="row.mg_state"
@@ -67,6 +67,7 @@
                   type="warning"
                   icon="el-icon-setting"
                   circle
+                  @click="roleBtn(row)"
                 ></el-button>
               </template>
             </el-table-column>
@@ -104,9 +105,12 @@
         style="width: 85%"
       >
         <el-form-item label="用户名称" prop="username">
-          <el-input v-model="ruleForm.username"></el-input>
+          <el-input
+            v-model="ruleForm.username"
+            :disabled="dialogToggle"
+          ></el-input>
         </el-form-item>
-        <el-form-item label="用户密码" prop="password">
+        <el-form-item label="用户密码" prop="password" v-if="!dialogToggle">
           <el-input v-model="ruleForm.password"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
@@ -118,17 +122,50 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">
-          确 定
-        </el-button>
+        <el-button type="primary" @click="okBtn"> 确 定 </el-button>
       </div>
+    </el-dialog>
+    <!-- #endregion -->
+    <!-- #region === 修改角色弹出层-->
+    <el-dialog
+      title="修改角色"
+      :visible.sync="roleDialog"
+      width="30%"
+      v-if="roleDialog"
+    >
+      <p>当前的用户：{{ user.username }}</p>
+      <p>当前的角色：{{ user.role_name }}</p>
+      <p>
+        分配新角色：
+        <el-select v-model="roleValue" placeholder="请选择">
+          <el-option
+            v-for="item in roleList"
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id"
+          >
+          </el-option>
+        </el-select>
+      </p>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="roleDialog = false">取 消</el-button>
+        <el-button type="primary" @click="roleOK">确 定</el-button>
+      </span>
     </el-dialog>
     <!-- #endregion -->
   </div>
 </template>
 
 <script>
-import { getUsersListAPI, editUsersStateAPI, delUserAPI } from '@/api/user'
+import {
+  getUsersListAPI,
+  editUsersStateAPI,
+  delUserAPI,
+  addUserAPI,
+  editUserAPI,
+  getUserAPI
+} from '@/api/user'
+import { assignRoleAPI, getRoleListAPI } from '@/api/role'
 export default {
   name: 'UserIndex',
   components: {},
@@ -181,10 +218,13 @@ export default {
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 10, message: '长度在 6 到 10 个字符', trigger: 'blur' }
-        ],
-        email: [],
-        mobile: []
-      }
+        ]
+      },
+      // role
+      roleDialog: false,
+      roleList: null,
+      roleValue: '',
+      user: null
     }
   },
   created() {
@@ -209,6 +249,7 @@ export default {
     async switchChange(id, type) {
       try {
         await editUsersStateAPI(id, type)
+        this.$message.success('状态修改成功')
       } catch (error) {
         console.log(error)
       }
@@ -232,9 +273,62 @@ export default {
       this.dialogVisible = true
       if (id) {
         this.dialogToggle = true
+        this.ruleForm = await getUserAPI(id)
       } else {
         this.dialogToggle = false
       }
+    },
+    async addFn() {
+      try {
+        await this.$refs.ruleForm.validate
+        await addUserAPI(this.ruleForm)
+        this.closeDialog()
+        this.$message.success('添加成功')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async editFn() {
+      this.$refs.ruleForm.validateField(['username'], async (iserror, vv) => {
+        if (!iserror) {
+          try {
+            await editUserAPI(this.ruleForm)
+            this.$message.success('用户修改成功')
+            this.closeDialog()
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      })
+    },
+    async roleBtn(data) {
+      try {
+        this.user = data
+        this.roleList = await getRoleListAPI()
+        this.roleDialog = true
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async roleOK() {
+      try {
+        await assignRoleAPI({ id: this.user.id, rid: this.roleValue })
+        this.$message.success('操作成功')
+        this.roleDialog = false
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    okBtn() {
+      if (this.ruleForm.id) {
+        this.editFn()
+      } else {
+        this.addFn()
+      }
+    },
+    closeDialog() {
+      this.dialogVisible = false
+      this.getUsersList()
     },
     handleSizeChange(val) {
       this.page.pagesize = val
