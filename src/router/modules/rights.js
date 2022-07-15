@@ -7,14 +7,20 @@ const rightsRouter = {
       component: () => import('@/views/Rights/right-list.vue'),
       name: 'rights',
       meta: {
-        title: '权限管理',
+        before: '权限管理',
+        title: '权限列表',
         icon: 'el-icon-s-check'
       }
     },
     {
       path: 'roles',
       component: () => import('@/views/Rights/role-list.vue'),
-      name: 'roles'
+      name: 'roles',
+      meta: {
+        before: '权限管理',
+        title: '角色列表',
+        icon: 'el-icon-s-check'
+      }
     }
   ]
 }

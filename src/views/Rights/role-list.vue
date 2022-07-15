@@ -1,5 +1,7 @@
 <template>
-  <div>RoleList</div>
+  <div class="rolelist-container">
+    <BreadCrumb :bread="$route" />
+  </div>
 </template>
 
 <script>
