@@ -3,13 +3,22 @@ const goodsRouter = {
   component: () => import('@/views/Home'),
   children: [
     {
-      path: '/goods',
+      path: 'goods',
       component: () => import('@/views/Goods/goods-index.vue'),
       name: 'goods',
       meta: {
         before: '商品管理',
         title: '商品列表',
         icon: 'el-icon-s-goods'
+      }
+    },
+    {
+      path: 'goods/add',
+      component: () => import('@/views/Goods/components/add-goods.vue'),
+      name: 'addgoods',
+      meta: {
+        before: '商品管理',
+        title: '商品添加'
       }
     },
     {
