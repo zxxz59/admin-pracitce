@@ -4,22 +4,31 @@ const goodsRouter = {
   children: [
     {
       path: '/goods',
-      component: () => import('@/views/test'),
+      component: () => import('@/views/Goods/goods-index.vue'),
       name: 'goods',
       meta: {
-        title: '商品管理',
+        before: '商品管理',
+        title: '商品列表',
         icon: 'el-icon-s-goods'
       }
     },
     {
       path: 'params',
-      component: () => import('@/views/test'),
-      name: 'params'
+      component: () => import('@/views/Goods/params-index.vue'),
+      name: 'params',
+      meta: {
+        before: '商品管理',
+        title: '分类参数'
+      }
     },
     {
       path: 'categories',
-      component: () => import('@/views/test'),
-      name: 'categories'
+      component: () => import('@/views/Goods/categories-index.vue'),
+      name: 'categories',
+      meta: {
+        before: '商品管理',
+        title: '商品分类'
+      }
     }
   ]
 }
