@@ -82,6 +82,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// 暂测子组件滚动加el返回组件没用
+// .rolelist-constainer {
+//   height: 100vh;
+//   overflow-y: auto;
+// }
 :deep(.el-table .warning-row) {
   background: oldlace;
 }

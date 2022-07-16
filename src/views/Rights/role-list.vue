@@ -3,9 +3,10 @@
     <BreadCrumb :bread="$route" />
     <my-card>
       <el-row>
-        <el-button size="middle" type="primary">添加角色</el-button>
+        <el-button size="middle" type="primary" @click="roles(0)">
+          添加角色
+        </el-button>
       </el-row>
-
       <!-- #region ===表单  -->
       <el-table
         :data="tableData"
@@ -62,11 +63,21 @@
         <el-table-column label="角色名称" prop="roleName"> </el-table-column>
         <el-table-column label="角色描述" prop="roleDesc"> </el-table-column>
         <el-table-column label="操作" prop="desc">
-          <template>
-            <el-button size="small" type="primary" icon="el-icon-edit">
+          <template v-slot="{ row }">
+            <el-button
+              size="small"
+              type="primary"
+              icon="el-icon-edit"
+              @click="roles(row.id)"
+            >
               编辑
             </el-button>
-            <el-button size="small" type="success" icon="el-icon-delete">
+            <el-button
+              size="small"
+              type="success"
+              icon="el-icon-delete"
+              @click="delRoles(row.id)"
+            >
               删除
             </el-button>
             <el-button size="small" type="info" icon="el-icon-setting">
@@ -77,18 +88,66 @@
       </el-table>
       <!-- #endregion -->
     </my-card>
+
+    <!-- #region === 添加角色弹出层 -->
+    <el-dialog
+      :title="isAdd ? '添加' : '编辑'"
+      :visible.sync="addDialog"
+      width="30%"
+      center
+      ref="dialog"
+    >
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+        v-if="addDialog"
+      >
+        <el-form-item label="角色名称" prop="roleName" style="width: 85%">
+          <el-input v-model="ruleForm.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc" style="width: 85%">
+          <el-input v-model="ruleForm.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addDialog = false"> 取 消 </el-button>
+        <el-button type="primary" @click="okBtn"> 确 定 </el-button>
+      </span>
+    </el-dialog>
+    <!-- #endregion -->
   </div>
 </template>
 
 <script>
-import { roleListAPI } from '@/api/rights'
+import {
+  roleListAPI,
+  addRolesAPI,
+  delRloesAPI,
+  personalRolesAPI,
+  editRolesAPI
+} from '@/api/rights'
 export default {
   name: 'RoleList',
   components: {},
   data() {
     return {
       tableData: [],
-      loading: false
+      loading: false,
+      addDialog: false,
+      isAdd: true,
+      ruleForm: {
+        roleName: '',
+        roleDesc: ''
+      },
+      rules: {
+        roleName: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' },
+          { min: 3, max: 6, message: '长度在 3 到 6 个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -104,6 +163,58 @@ export default {
         console.log(error)
         this.loading = false
       }
+    },
+    async addRoles() {
+      try {
+        await addRolesAPI(this.ruleForm)
+        this.$message.success('添加成功')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async editRoles() {
+      try {
+        await editRolesAPI(this.ruleForm)
+        this.$message.success('修改成功')
+        this.closeDialog()
+        this.ruleForm = {
+          roleName: '',
+          roleDesc: ''
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async roles(id) {
+      this.addDialog = true
+      if (id) {
+        this.isAdd = false
+        this.ruleForm = await personalRolesAPI(id)
+      } else {
+        this.isAdd = true
+      }
+    },
+    async delRoles(id) {
+      try {
+        await delRloesAPI(id)
+        this.$message.success('删除成功')
+        this.rightsTree()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    okBtn() {
+      if (this.ruleForm.roleId) {
+        this.editRoles()
+      } else {
+        this.addRoles()
+        console.log('add')
+      }
+      this.closeDialog()
+    },
+    closeDialog() {
+      this.addDialog = false
+      this.rightsTree()
     },
     closeTag() {}
   },
