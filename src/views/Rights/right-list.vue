@@ -1,7 +1,15 @@
 <template>
-  <div class="rolelist-constainer">
+  <div>
     <BreadCrumb :bread="$route" />
-    <my-card>
+    <el-switch
+      v-model="windowValue"
+      active-color="#13ce66"
+      inactive-color="#ff4949"
+      active-text="视窗模式"
+      style="margin-top: 20px"
+    >
+    </el-switch>
+    <my-card :class="windowValue ? 'rolelist-constainer' : ''">
       <el-table
         :data="rightsData"
         style="width: 100%"
@@ -52,7 +60,8 @@ export default {
   data() {
     return {
       rightsData: [],
-      loading: false
+      loading: false,
+      windowValue: false
     }
   },
   created() {
@@ -83,10 +92,10 @@ export default {
 
 <style scoped lang="scss">
 // 暂测子组件滚动加el返回组件没用
-// .rolelist-constainer {
-//   height: 100vh;
-//   overflow-y: auto;
-// }
+.rolelist-constainer {
+  height: 100vh;
+  overflow-y: auto;
+}
 :deep(.el-table .warning-row) {
   background: oldlace;
 }
