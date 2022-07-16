@@ -17,38 +17,48 @@
         <el-table-column type="expand" label="#">
           <template v-slot="{ row }">
             <el-row
-              v-for="(item, index) in row.children"
-              :key="index"
+              v-for="item in row.children"
+              :key="item.id"
               :class="['borderbottom', index === 0 ? 'bordertop' : '']"
               type="flex"
               align="middle"
             >
               <!-- 一级列表 -->
               <el-col :span="6">
-                <el-tag>{{ item.authName }} </el-tag>
+                <el-tag closable @close="closeTag(row, item.id)"
+                  >{{ item.authName }}
+                </el-tag>
                 <i class="el-icon-caret-right"></i>
               </el-col>
               <el-col :span="18">
                 <!-- 二级列表 -->
                 <el-row
-                  v-for="(item2, index) in item.children"
-                  :key="index"
+                  v-for="item2 in item.children"
+                  :key="item2.id"
                   type="flex"
                   align="middle"
                   :class="[index === 0 ? '' : 'bordertop']"
                 >
                   <el-col :span="6">
-                    <el-tag type="success"> {{ item2.authName }} </el-tag>
+                    <el-tag
+                      type="success"
+                      closable
+                      @close="closeTag(row, item2.id)"
+                    >
+                      {{ item2.authName }}
+                    </el-tag>
                     <i class="el-icon-caret-right"></i>
                   </el-col>
                   <!-- 三级列表 -->
                   <el-col :span="18">
+                    <!-- HACK -->
+                    <!--,, 开启动画根据ID删除，要把key绑成id不然动画会出现在最后一个 -->
                     <el-tag
-                      v-for="(item3, index) in item2.children"
-                      :key="index"
+                      v-for="item3 in item2.children"
+                      :key="item3.id"
                       closable
                       type="warning"
-                      @close="closeTag"
+                      @close="closeTag(row, item3.id)"
                     >
                       {{ item3.authName }}
                       <i class="el-icon-caret-right"></i>
@@ -80,7 +90,12 @@
             >
               删除
             </el-button>
-            <el-button size="small" type="info" icon="el-icon-setting">
+            <el-button
+              size="small"
+              type="info"
+              icon="el-icon-setting"
+              @click="assignBtn(row.children, row.id)"
+            >
               分配权限
             </el-button>
           </template>
@@ -118,6 +133,15 @@
       </span>
     </el-dialog>
     <!-- #endregion -->
+    <!-- #region === 分配角色弹出层 -->
+    <assign-right
+      :assignRightDialog="assignRightDialog"
+      :roleRights="roleRights"
+      v-if="assignRightDialog"
+      @close="closeAssign"
+      :roleId="roleId"
+    />
+    <!-- #endregion -->
   </div>
 </template>
 
@@ -127,16 +151,19 @@ import {
   addRolesAPI,
   delRloesAPI,
   personalRolesAPI,
-  editRolesAPI
+  editRolesAPI,
+  delRights
 } from '@/api/rights'
+import AssignRight from './components/assign-right.vue'
 export default {
   name: 'RoleList',
-  components: {},
+  components: { AssignRight },
   data() {
     return {
       tableData: [],
       loading: false,
       addDialog: false,
+      assignRightDialog: false,
       isAdd: true,
       ruleForm: {
         roleName: '',
@@ -147,7 +174,9 @@ export default {
           { required: true, message: '请输入活动名称', trigger: 'blur' },
           { min: 3, max: 6, message: '长度在 3 到 6 个字符', trigger: 'blur' }
         ]
-      }
+      },
+      roleRights: [],
+      roleId: null
     }
   },
   created() {
@@ -203,6 +232,20 @@ export default {
         console.log(error)
       }
     },
+    async closeTag(row, rightId) {
+      try {
+        await this.$confirm('确认删除此权限?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        // HACK 跟新思维
+        // ,,局部更新
+        row.children = await delRights(row.id, rightId)
+      } catch (error) {
+        console.log(error)
+      }
+    },
     okBtn() {
       if (this.ruleForm.roleId) {
         this.editRoles()
@@ -216,7 +259,15 @@ export default {
       this.addDialog = false
       this.rightsTree()
     },
-    closeTag() {}
+    assignBtn(rights, id) {
+      this.roleRights = rights
+      this.roleId = id
+      this.assignRightDialog = true
+    },
+    closeAssign() {
+      this.assignRightDialog = false
+      this.rightsTree()
+    }
   },
   computed: {},
   watch: {}

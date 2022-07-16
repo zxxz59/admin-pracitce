@@ -11,6 +11,15 @@ export function rightsListAPI() {
 }
 /**
  *
+ * @权限列表
+ */
+export function rightsTreeAPI() {
+  return request({
+    url: 'rights/tree'
+  })
+}
+/**
+ *
  * @角色列表
  */
 export function roleListAPI() {
@@ -65,5 +74,32 @@ export function editRolesAPI(data) {
     url: `roles/${data.roleId}`,
     method: 'put',
     data
+  })
+}
+/**
+ *
+ * @param {*} roleId
+ * @param {*} data
+ * @分配权限
+ */
+export function assignRightsAPI(roleId, data) {
+  return request({
+    url: `roles/${roleId}/rights`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ *
+ * @param {*} roleId
+ * @param {*} rightId
+ * @删除角色指定权限
+ */
+
+export function delRights(roleId, rightId) {
+  return request({
+    url: `roles/${roleId}/rights/${rightId}`,
+    method: 'delete'
   })
 }
