@@ -51,6 +51,9 @@
             <el-table-column prop="goods_weight" label="商品重量">
             </el-table-column>
             <el-table-column prop="add_time" label="创建时间">
+              <template v-slot="{ row }">
+                {{ row.add_time | dealTime }}
+              </template>
             </el-table-column>
             <el-table-column label="操作" width="190">
               <template v-slot="{ row }">

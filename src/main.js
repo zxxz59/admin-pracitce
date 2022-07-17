@@ -6,6 +6,7 @@ import ElementUI from 'element-ui'
 import '@/style/index.scss'
 import 'element-ui/lib/theme-chalk/index.css'
 import '@/permission'
+import '@/utils/dayjs'
 
 import * as adminComponent from '@/components'
 Object.keys(adminComponent).forEach((key) => {
