@@ -61,7 +61,7 @@
                   type="primary"
                   size="small"
                   icon="el-icon-edit"
-                  @click="editbtn(row.id)"
+                  @click="editbtn(row.goods_id)"
                 >
                   编辑
                 </el-button>
@@ -69,7 +69,7 @@
                   type="danger"
                   size="small"
                   icon="el-icon-delete"
-                  @click="delBtn(row.id)"
+                  @click="delBtn(row.goods_id)"
                 >
                   删除
                 </el-button>
@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { getGoodsAPI } from '@/api/goods'
+import { getGoodsAPI, delGoodsAPI } from '@/api/goods'
 export default {
   name: 'GoodsIndex',
   components: {},
@@ -138,6 +138,20 @@ export default {
       } catch (error) {
         console.log(error)
         this.loading = false
+      }
+    },
+    async delBtn(id) {
+      try {
+        await this.$confirm('确认删除此商品?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        await delGoodsAPI(id)
+        this.getGoods()
+        this.$message.success('删除成功')
+      } catch (error) {
+        console.log(error)
       }
     },
     handleSizeChange(val) {
