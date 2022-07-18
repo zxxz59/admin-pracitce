@@ -24,3 +24,42 @@ export function delGoodsAPI(id) {
     url: `goods/${id}`
   })
 }
+/**
+ *
+ * @获取分类
+ */
+export function getCategoriesAPI() {
+  return request({
+    method: 'get',
+    url: 'categories'
+  })
+}
+
+/**
+ *
+ * @param {*} id
+ * @获取动态参数列表
+ */
+export function getAttributesAPI(id) {
+  return request({
+    method: 'get',
+    url: `categories/${id}/attributes`,
+    params: {
+      sel: 'many'
+    }
+  })
+}
+/**
+ *
+ * @param {*} id
+ * @获取静态参数列表
+ */
+export function getAttributesOnlyAPI(id) {
+  return request({
+    method: 'get',
+    url: `categories/${id}/attributes`,
+    params: {
+      sel: 'only'
+    }
+  })
+}

@@ -13,7 +13,7 @@ const goodsRouter = {
       }
     },
     {
-      path: 'goods/add',
+      path: 'addgoods',
       component: () => import('@/views/Goods/components/add-goods.vue'),
       name: 'addgoods',
       meta: {
