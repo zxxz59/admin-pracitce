@@ -75,3 +75,27 @@ export function addGoodsAPI(data) {
     data
   })
 }
+
+/**
+ *
+ * @param {*} data
+ * @returns添加某商品详情
+ */
+export function getGoodsDetailAPI(id) {
+  return request({
+    method: 'get',
+    url: `goods/${id}`
+  })
+}
+/**
+ *
+ * @param {*} data
+ * @returns添加某商品详情
+ */
+export function editGoodsAPI(id, data) {
+  return request({
+    method: 'put',
+    url: `goods/${id}`,
+    data
+  })
+}

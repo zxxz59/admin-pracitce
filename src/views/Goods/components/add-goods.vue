@@ -29,6 +29,7 @@
         label-position="top"
       >
         <el-tabs
+          v-loading="isloading"
           :tab-position="'left'"
           style="min-height: 400px"
           v-model="stepActive"
@@ -117,9 +118,13 @@
               style="width: 100%"
               v-model="ruleForm.goods_introduce"
             />
-            <el-button type="primary" @click="addGoods" style="margin-top: 30px"
-              >添加商品</el-button
+            <el-button
+              type="primary"
+              @click="addGoods"
+              style="margin-top: 30px"
             >
+              {{ goodsId ? '完成编辑' : '添加商品' }}
+            </el-button>
           </el-tab-pane>
           <el-tab-pane name="5" label="完成添加">
             <el-button type="primary" @click="continueBtn">
@@ -155,7 +160,9 @@ import {
   getCategoriesAPI,
   getAttributesAPI,
   getAttributesOnlyAPI,
-  addGoodsAPI
+  addGoodsAPI,
+  getGoodsDetailAPI,
+  editGoodsAPI
 } from '@/api/goods'
 export default {
   name: 'AddGoods',
@@ -163,6 +170,7 @@ export default {
   data() {
     return {
       stepActive: 0,
+      isloading: false,
       catList: [],
       // ,, 图片上传API
       uploadHttp: process.env.VUE_APP_BASE_API + 'upload',
@@ -176,7 +184,7 @@ export default {
       imgurl: '',
       ruleForm: {
         goods_name: '',
-        // BUG 暂时写固定值
+        // BUG 暂时写默认值
         goods_cat: [1988, 1989, 2099],
         goods_price: 0,
         goods_number: 1,
@@ -209,18 +217,25 @@ export default {
       attributesList: [],
       onlyAttributesList: [],
       // 能否进入添加成功开关 配合toggleTabs
-      switch5: false
+      switch5: false,
+      goodsId: this.$route.query.goodsId || ''
     }
   },
   created() {
     this.getCategories()
+    if (this.goodsId) {
+      this.getGoodsDetail()
+    }
   },
   methods: {
     async getCategories() {
+      this.isloading = true
       try {
         this.catList = await getCategoriesAPI()
+        this.isloading = false
       } catch (error) {
         console.log(error)
+        this.isloading = false
       }
     },
     cascaderChange() {
@@ -288,20 +303,39 @@ export default {
       this.ruleForm.pics.push(res.data.tmp_path)
     },
     async addGoods() {
-      try {
-        await this.$refs.ruleForm.validate()
-        this.ruleForm.goods_cat = this.ruleForm.goods_cat.toString()
-        await addGoodsAPI(this.ruleForm)
-        this.$message.success('添加商品成功')
-        this.switch5 = true
-        this.stepActive = '5'
-      } catch (error) {
-        console.log(error)
-      }
+      this.$refs.ruleForm.validate(async (isok) => {
+        if (isok) {
+          try {
+            this.ruleForm.goods_cat = this.ruleForm.goods_cat.toString()
+            if (!this.goodsId) {
+              await addGoodsAPI(this.ruleForm)
+              this.$message.success('添加商品成功')
+            } else {
+              await editGoodsAPI(this.goodsId, this.ruleForm)
+              this.$message.success('修改商品成功')
+            }
+            this.switch5 = true
+            this.stepActive = '5'
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      })
     },
     async continueBtn() {
       await this.$refs.ruleForm.resetFields()
       this.stepActive = '0'
+    },
+    async getGoodsDetail() {
+      this.isloading = true
+      try {
+        const res = await getGoodsDetailAPI(this.goodsId)
+        this.ruleForm = { ...this.ruleForm, ...res }
+        this.isloading = false
+      } catch (error) {
+        console.log(error)
+        this.isloading = false
+      }
     }
   },
   computed: {},
