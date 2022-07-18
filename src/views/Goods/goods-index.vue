@@ -156,7 +156,7 @@ export default {
     },
     editbtn(id) {
       this.$router.push({
-        name: 'addgoods',
+        name: 'addgoos',
         query: {
           goodsId: id
         }
