@@ -154,6 +154,14 @@ export default {
         console.log(error)
       }
     },
+    editbtn(id) {
+      this.$router.push({
+        name: 'addgoogs',
+        query: {
+          goodsId: id
+        }
+      })
+    },
     handleSizeChange(val) {
       this.page.pagesize = val
       this.getGoods()

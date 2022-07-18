@@ -63,3 +63,15 @@ export function getAttributesOnlyAPI(id) {
     }
   })
 }
+/**
+ *
+ * @param {*} data
+ * @returns添加商品
+ */
+export function addGoodsAPI(data) {
+  return request({
+    method: 'post',
+    url: 'goods',
+    data
+  })
+}

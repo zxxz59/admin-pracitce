@@ -36,16 +36,31 @@
         >
           <el-tab-pane name="0" label="基本信息">
             <el-form-item label="商品名称" prop="goods_name">
-              <el-input v-model="ruleForm.goods_name"></el-input>
+              <el-input
+                v-model="ruleForm.goods_name"
+                style="width: 180px"
+              ></el-input>
             </el-form-item>
             <el-form-item label="商品价格" prop="goods_price">
-              <el-input v-model="ruleForm.goods_price"></el-input>
+              <el-input-number
+                v-model="ruleForm.goods_price"
+                controls-position="right"
+                :min="0"
+              ></el-input-number>
             </el-form-item>
             <el-form-item label="商品重量" prop="goods_weight">
-              <el-input v-model="ruleForm.goods_weight"></el-input>
+              <el-input-number
+                v-model="ruleForm.goods_weight"
+                controls-position="right"
+                :min="0"
+              ></el-input-number>
             </el-form-item>
             <el-form-item label="商品数量" prop="goods_number">
-              <el-input v-model="ruleForm.goods_number"></el-input>
+              <el-input-number
+                controls-position="right"
+                :min="0"
+                v-model="ruleForm.goods_number"
+              ></el-input-number>
             </el-form-item>
             <el-form-item label="商品分类" prop="goods_cat">
               <el-cascader
@@ -84,29 +99,81 @@
               <el-input v-model="item.attr_vals"></el-input>
             </el-form-item>
           </el-tab-pane>
-          <el-tab-pane name="3" label="商品图片">定时任务</el-tab-pane>
-          <el-tab-pane name="4" label="商品内容">角色管理</el-tab-pane>
+          <el-tab-pane name="3" label="商品图片">
+            <el-upload
+              class="upload-demo"
+              :action="uploadHttp"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :on-success="handleSuccess"
+              list-type="picture"
+              :headers="headers"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+          </el-tab-pane>
+          <el-tab-pane name="4" label="商品内容">
+            <quillEditor
+              style="width: 100%"
+              v-model="ruleForm.goods_introduce"
+            />
+            <el-button type="primary" @click="addGoods" style="margin-top: 30px"
+              >添加商品</el-button
+            >
+          </el-tab-pane>
+          <el-tab-pane name="5" label="完成添加">
+            <el-button type="primary" @click="continueBtn">
+              继续添加商品
+            </el-button>
+            <el-button type="success" @click="$router.push({ name: 'goods' })">
+              返回商品列表
+            </el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
       <!-- #endregion -->
     </my-card>
+    <!-- #region === 图片预览对话框 -->
+    <el-dialog title="图片预览" :visible.sync="picVisible" width="30%" center>
+      <el-row type="flex" align="middle" justify="center">
+        <el-image style="width: 300px; height: 300px" :src="imgurl"></el-image>
+      </el-row>
+    </el-dialog>
+    <!-- #endregion -->
   </div>
 </template>
 
 <script>
-import request from '@/utils/request'
+// #region ==导入富文本编辑器
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
+// 注册子组件quillEditor
+// #endregion
 import {
   getCategoriesAPI,
   getAttributesAPI,
-  getAttributesOnlyAPI
+  getAttributesOnlyAPI,
+  addGoodsAPI
 } from '@/api/goods'
 export default {
   name: 'AddGoods',
-  components: {},
+  components: { quillEditor },
   data() {
     return {
       stepActive: 0,
       catList: [],
+      // ,, 图片上传API
+      uploadHttp: process.env.VUE_APP_BASE_API + 'upload',
+      //  ,, 图片上传的请求头
+      headers: {
+        Authorization: `${this.$store.getters.token}`
+      },
+      // 图片弹出层
+      picVisible: false,
+      // 图片线上地址
+      imgurl: '',
       ruleForm: {
         goods_name: '',
         // BUG 暂时写固定值
@@ -140,12 +207,13 @@ export default {
         value: 'cat_id'
       },
       attributesList: [],
-      onlyAttributesList: []
+      onlyAttributesList: [],
+      // 能否进入添加成功开关 配合toggleTabs
+      switch5: false
     }
   },
   created() {
     this.getCategories()
-    console.log(request)
   },
   methods: {
     async getCategories() {
@@ -174,6 +242,15 @@ export default {
         this.getAttributesOnly()
         return true
       }
+      if (activeName === '5') {
+        if (this.switch5) {
+          this.switch5 = false
+          return true
+        } else {
+          this.$message('添加未完成')
+          return false
+        }
+      }
     },
     async getAttributes() {
       try {
@@ -193,6 +270,38 @@ export default {
       } catch (error) {
         console.log(error)
       }
+    },
+    // 移除图片
+    handleRemove(file, fileList) {
+      const index = this.ruleForm.pics.findIndex(
+        (item) => item === file.response.data.tmp_path
+      )
+      this.ruleForm.pics.splice(index, 1)
+    },
+    handlePreview(file) {
+      console.log(file)
+      this.imgurl = file.url
+      this.picVisible = true
+    },
+    // 添加图片临时路径到表单信息中
+    handleSuccess(res) {
+      this.ruleForm.pics.push(res.data.tmp_path)
+    },
+    async addGoods() {
+      try {
+        await this.$refs.ruleForm.validate()
+        this.ruleForm.goods_cat = this.ruleForm.goods_cat.toString()
+        await addGoodsAPI(this.ruleForm)
+        this.$message.success('添加商品成功')
+        this.switch5 = true
+        this.stepActive = '5'
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async continueBtn() {
+      await this.$refs.ruleForm.resetFields()
+      this.stepActive = '0'
     }
   },
   computed: {},
@@ -217,5 +326,8 @@ export default {
 :deep(.el-checkbox.is-bordered.is-checked) {
   margin: 0;
   margin-right: 10px;
+}
+:deep(.ql-editor) {
+  min-height: 150px;
 }
 </style>
