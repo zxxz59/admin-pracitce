@@ -99,3 +99,15 @@ export function editGoodsAPI(id, data) {
     data
   })
 }
+
+/**
+ *
+ * @param {*} data
+ * @returns添加某商品详情
+ */
+export function delAttributeAPI(id, attrid) {
+  return request({
+    method: 'delete',
+    url: `categories/${id}/attributes/${attrid}`
+  })
+}
