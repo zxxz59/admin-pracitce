@@ -34,7 +34,6 @@
           v-model="stepActive"
           :before-leave="toggleTabs"
         >
-          <!-- #region === 基本信息 -->
           <el-tab-pane name="0" label="基本信息">
             <el-form-item label="商品名称" prop="goods_name">
               <el-input v-model="ruleForm.goods_name"></el-input>
@@ -58,7 +57,6 @@
               ></el-cascader>
             </el-form-item>
           </el-tab-pane>
-          <!-- #endregion -->
           <el-tab-pane name="1" label="商品参数">
             <el-form-item
               :label="item.attr_name"
@@ -78,7 +76,11 @@
             </el-form-item>
           </el-tab-pane>
           <el-tab-pane name="2" label="商品属性">
-            <el-form-item :label="item.attr_name" v-for="(item, index) in onlyAttributesList" :key="index">
+            <el-form-item
+              :label="item.attr_name"
+              v-for="(item, index) in onlyAttributesList"
+              :key="index"
+            >
               <el-input v-model="item.attr_vals"></el-input>
             </el-form-item>
           </el-tab-pane>
@@ -92,6 +94,7 @@
 </template>
 
 <script>
+import request from '@/utils/request'
 import {
   getCategoriesAPI,
   getAttributesAPI,
@@ -142,6 +145,7 @@ export default {
   },
   created() {
     this.getCategories()
+    console.log(request)
   },
   methods: {
     async getCategories() {
