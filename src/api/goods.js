@@ -79,7 +79,7 @@ export function addGoodsAPI(data) {
 /**
  *
  * @param {*} data
- * @returns添加某商品详情
+ * @编辑添加某商品详情
  */
 export function getGoodsDetailAPI(id) {
   return request({
@@ -90,7 +90,7 @@ export function getGoodsDetailAPI(id) {
 /**
  *
  * @param {*} data
- * @returns添加某商品详情
+ * @编辑某商品详情
  */
 export function editGoodsAPI(id, data) {
   return request({
@@ -140,7 +140,7 @@ export function getAttributeOneAPI(id, attrid, params) {
 /**
  *
  * @param {*} data
- * @根据 ID 查询参数
+ * @根据 编辑
  */
 export function editAttributeOneAPI(id, attrid, data) {
   return request({

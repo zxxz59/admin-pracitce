@@ -29,15 +29,18 @@
               v-for="(item, index) in row.attr_vals"
               closable
               :disable-transitions="false"
-              @close="handleClose(item)"
+              @close="handleClose(row, index)"
             >
               {{ item }}
             </el-tag>
             <!-- HACK -->
+            <!-- ,,1，js中获取数据之后先给每个row对象添加inputVisible/inputValue -->
+            <!--,,2，给每一输入框绑定本行的inputVisible/inputValue,添加时取本标签页的值 -->
+            <!--,,达到点击标签输入框显示以及输入的值和其他行不冲突 -->
             <el-input
               class="input-new-tag"
-              v-if="inputVisible"
-              v-model="inputValue"
+              v-if="row.inputVisible"
+              v-model="row.inputValue"
               ref="saveTagInput"
               size="small"
               @keyup.enter.native="handleInputConfirm(row)"
@@ -48,7 +51,7 @@
               v-else
               class="button-new-tag"
               size="small"
-              @click="showInput"
+              @click="showInput(row)"
               >+ New Tag
             </el-button>
           </el-row>
@@ -196,21 +199,29 @@ export default {
     },
     async getAttributes() {
       try {
-        this.attributesList = await getAttributesAPI(this.cascaderData[2])
-        this.attributesList.forEach((item) => {
+        const data = await getAttributesAPI(this.cascaderData[2])
+        data.forEach((item) => {
           item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+          item.inputValue = ''
+          item.inputVisible = false
         })
+        this.attributesList = data
       } catch (error) {
         console.log(error)
       }
     },
+    // HACK
     async getAttributesOnly() {
       try {
-        console.log(1)
-        this.attributesList = await getAttributesOnlyAPI(this.cascaderData[2])
-        this.attributesList.forEach((item) => {
+        const data = await getAttributesOnlyAPI(this.cascaderData[2])
+        data.forEach((item) => {
           item.attr_vals = item.attr_vals ? item.attr_vals.split(' ') : []
+          // [ ]
+          item.inputValue = ''
+          item.inputVisible = false
         })
+        this.attributesList = data
+        console.log(this.attributesList)
       } catch (error) {
         console.log(error)
       }
@@ -269,21 +280,48 @@ export default {
         console.log(error)
       }
     },
-    handleClose(item) {
-      console.log(item)
+    handleClose(row, index) {
+      try {
+        row.attr_vals.splice(index, 1)
+        this.editTag(row)
+      } catch (error) {
+        console.log(error)
+      }
+      // console.log('handClose')
     },
-    showInput() {
-      this.inputVisible = true
+    showInput(row) {
+      row.inputVisible = true
       this.$nextTick(() => {
         this.$refs.saveTagInput.$refs.input.focus()
       })
     },
-    handleInputConfirm(row) {
-      if (this.inputValue) {
-        row.attr_vals.push(this.inputValue)
+    // HACK标签页修改接口
+    async editTag(row) {
+      try {
+        const attrValue = row.attr_vals.join(' ')
+        const data = {
+          attr_sel: row.attr_sel,
+          attr_vals: attrValue,
+          attr_name: row.attr_name
+        }
+        await editAttributeOneAPI(row.cat_id, row.attr_id, data)
+        this.$message.success('操作成功')
+      } catch (error) {
+        console.log(error)
       }
-      this.inputVisible = false
-      this.inputValue = ''
+    },
+    // 提交输入框内容
+    handleInputConfirm(row) {
+      if (row.inputValue) {
+        try {
+          row.attr_vals.push(row.inputValue)
+          this.editTag(row)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      row.inputVisible = false
+      row.inputValue = ''
     }
   },
   computed: {},
