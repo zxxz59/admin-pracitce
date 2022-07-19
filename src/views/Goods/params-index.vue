@@ -30,7 +30,13 @@
             :cascaderData="cascaderData"
           />
         </el-tab-pane>
-        <el-tab-pane label="静态属性" name="1">静态属性</el-tab-pane>
+        <el-tab-pane label="静态属性" name="1">
+          <params-table
+            v-if="activeName === '1'"
+            :activeName="activeName - 0"
+            :cascaderData="cascaderData"
+          />
+        </el-tab-pane>
       </el-tabs>
     </my-card>
   </div>
