@@ -149,3 +149,39 @@ export function editAttributeOneAPI(id, attrid, data) {
     data
   })
 }
+
+/**
+ *
+ * @获取分类带参数
+ */
+export function getCategoriesDetailAPI(params) {
+  return request({
+    method: 'get',
+    url: 'categories',
+    params
+  })
+}
+
+/**
+ *
+ * @param {*} params
+ * @删除分类
+ */
+export function delCategoriesAPI(id) {
+  return request({
+    method: 'delete',
+    url: `categories/${id}`
+  })
+}
+/**
+ *
+ * @param {*} params
+ * @新增分类
+ */
+export function addCategoriesAPI(data) {
+  return request({
+    method: 'post',
+    url: 'categories',
+    data
+  })
+}
