@@ -36,11 +36,7 @@ service.interceptors.response.use(
   },
   (error) => {
     // TODO不知道过期是什么状态
-    if (
-      error.response &&
-      error.response.data &&
-      error.response.data.code === 10002
-    ) {
+    if (error.response && error.response.msg === '无效token') {
       store.dispatch('user/logout')
       router.push('/login')
     } else {
