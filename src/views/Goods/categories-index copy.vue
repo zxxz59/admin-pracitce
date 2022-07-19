@@ -2,7 +2,7 @@
   <div>
     <BreadCrumb :bread="$route" />
     <my-card>
-      <el-button type="success" size="middle" @click="add">
+      <el-button type="success" size="middle" @click="edit">
         添加分类
       </el-button>
       <el-table
@@ -38,7 +38,7 @@
               type="primary"
               size="small"
               icon="el-icon-edit"
-              @click="edit(row)"
+              @click="editbtn(row.cat_id)"
             >
               编辑
             </el-button>
@@ -68,72 +68,6 @@
       </div>
       <!-- #endregion -->
     </my-card>
-    <!-- #region === 添加分类弹出层 -->
-    <el-dialog
-      title="添加分类"
-      :visible.sync="addDialogVisible"
-      width="50%"
-      center
-    >
-      <el-form
-        :model="addForm"
-        :rules="addRules"
-        ref="addForm"
-        label-width="100px"
-        class="demo-addForm"
-      >
-        <el-form-item label="分类名称" prop="cat_name" style="width: 85%">
-          <el-input v-model="addForm.cat_name"></el-input>
-        </el-form-item>
-        <el-form-item label="父级分类">
-          <el-cascader
-            ref="addCascader"
-            v-model="value"
-            :options="addChoose"
-            :props="addprops"
-            @change="addCascaderChange"
-          ></el-cascader>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="addDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addBtn"> 确 定 </el-button>
-      </span>
-    </el-dialog>
-    <!-- #endregion -->
-    <!-- #region === 编辑分类弹出层 -->
-    <el-dialog
-      title="编辑分类"
-      :visible.sync="editDialogVisible"
-      width="50%"
-      center
-    >
-      <el-form
-        :model="editForm"
-        :rules="editRules"
-        ref="editForm"
-        label-width="100px"
-        class="demo-editForm"
-      >
-        <el-form-item label="分类名称" prop="cat_name" style="width: 85%">
-          <el-input v-model="editForm.cat_name"></el-input>
-        </el-form-item>
-        <el-form-item label="父级分类">
-          <el-cascader
-            ref="editCascader"
-            v-model="editValue"
-            :options="editChoose"
-            :props="editprops"
-            @change="editCascaderChange"
-          ></el-cascader>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editBtn"> 确 定 </el-button>
-      </span>
-    </el-dialog>
-    <!-- #endregion -->
   </div>
 </template>
 
@@ -141,7 +75,6 @@
 import {
   getCategoriesDetailAPI,
   delCategoriesAPI,
-  addCategoriesAPI,
   editCategoriesAPI
 } from '@/api/goods'
 export default {
@@ -156,27 +89,6 @@ export default {
         pagenum: 1,
         pagesize: 5
       },
-      // #region ===添加分类
-      addForm: {
-        cat_name: '',
-        cat_pid: 0,
-        cat_level: 0
-      },
-      addRules: {
-        cat_name: [
-          { required: true, message: '请输入分类名称', trigger: 'blur' }
-        ]
-      },
-      addDialogVisible: false,
-      addChoose: [],
-      addprops: {
-        expandTrigger: 'hover',
-        label: 'cat_name',
-        value: 'cat_id',
-        checkStrictly: true
-      },
-      value: [],
-      // #endregion
       // #region === 编辑分类
       editForm: {
         cat_name: '',
@@ -195,8 +107,7 @@ export default {
         label: 'cat_name',
         value: 'cat_id',
         checkStrictly: true
-      },
-      editValue: []
+      }
       // #endregion
     }
   },
@@ -234,19 +145,22 @@ export default {
         console.log(error)
       }
     },
-    async add() {
-      this.addDialogVisible = true
+    // BUG
+    async edit() {
+      this.editDialogVisible = true
       try {
-        this.addChoose = await getCategoriesDetailAPI({ type: [2] })
+        this.editChoose = await getCategoriesDetailAPI({ type: [2] })
       } catch (error) {
         console.log(error)
       }
     },
-    async addBtn() {
+
+    // BUG
+    async editBtn() {
       try {
-        await addCategoriesAPI(this.addForm)
-        this.$message.success('添加成功')
-        this.addDialogVisible = false
+        await editCategoriesAPI(this.editForm)
+        this.$message.success('编辑成功')
+        this.editDialogVisible = false
         this.getCategoriesDetail()
       } catch (error) {
         console.log(error)
@@ -260,38 +174,11 @@ export default {
       this.page.pagenum = val
       this.getCategoriesDetail()
     },
-    addCascaderChange() {
-      const node = this.$refs.addCascader.getCheckedNodes()[0].data
-      this.addForm.cat_pid = node.cat_pid
-      this.addForm.cat_level = node.cat_level + 1
-    },
-    // edit
-    async edit(row) {
-      this.editDialogVisible = true
-      try {
-        this.editChoose = await getCategoriesDetailAPI({ type: [2] })
-        this.editForm.cat_name = row.cat_name
-        this.editForm.cat_pid = row.cat_pid
-        this.cat_level = row.cat_level
-        this.editValue = [row.cat_id]
-      } catch (error) {
-        console.log(error)
-      }
-    },
+    // BUG
     editCascaderChange() {
       const node = this.$refs.editCascader.getCheckedNodes()[0].data
       this.editForm.cat_pid = node.cat_pid
       this.editForm.cat_level = node.cat_level + 1
-    },
-    async editBtn() {
-      try {
-        await editCategoriesAPI(this.editValue[0], this.editForm)
-        this.$message.success('编辑成功')
-        this.addDialogVisible = false
-        this.getCategoriesDetail()
-      } catch (error) {
-        console.log(error)
-      }
     }
   },
   computed: {},

@@ -185,3 +185,15 @@ export function addCategoriesAPI(data) {
     data
   })
 }
+/**
+ *
+ * @param {*} params
+ * @编辑分类
+ */
+export function editCategoriesAPI(id, data) {
+  return request({
+    method: 'put',
+    url: `categories/${id}`,
+    data
+  })
+}
