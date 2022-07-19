@@ -114,14 +114,13 @@
       v-if="editDialogVisible"
     >
       <el-form
-        :model="ruleForm"
+        :model="editruleForm"
         :rules="rules"
-        ref="ruleForm"
+        ref="editruleForm"
         label-width="100px"
-        class="demo-ruleForm"
       >
         <el-form-item label="输入名称" prop="attr_name" style="width: 85%">
-          <el-input v-model="ruleForm.attr_name"></el-input>
+          <el-input v-model="editruleForm.attr_name"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -171,7 +170,13 @@ export default {
       ruleForm: {
         attr_name: ''
       },
+      editruleForm: {
+        attr_name: ''
+      },
       rules: {
+        attr_name: [{ required: true, message: '不能为空', trigger: 'blur' }]
+      },
+      editrules: {
         attr_name: [{ required: true, message: '不能为空', trigger: 'blur' }]
       }
     }
@@ -243,7 +248,9 @@ export default {
       this.editDialogVisible = true
       try {
         const type = this.activeName ? 'only' : 'many'
-        this.ruleForm = await getAttributeOneAPI(id, attrid, { attr_sel: type })
+        this.editruleForm = await getAttributeOneAPI(id, attrid, {
+          attr_sel: type
+        })
       } catch (error) {
         console.log(error)
       }
@@ -251,9 +258,9 @@ export default {
     async editOkBtn() {
       try {
         await editAttributeOneAPI(
-          this.ruleForm.cat_id,
-          this.ruleForm.attr_id,
-          this.ruleForm
+          this.editruleForm.cat_id,
+          this.editruleForm.attr_id,
+          this.editruleForm
         )
         this.getWhich()
         this.$message.success('编辑成功')
