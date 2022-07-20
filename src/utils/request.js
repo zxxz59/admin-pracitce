@@ -29,7 +29,6 @@ service.interceptors.response.use(
     if (meta.status === 200 || meta.status === 201 || meta.status === 204) {
       return data
     } else {
-      console.log(meta)
       Message.error(meta.msg)
       return Promise.reject(new Error(meta.msg))
     }

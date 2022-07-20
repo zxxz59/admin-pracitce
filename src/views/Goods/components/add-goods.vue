@@ -294,7 +294,6 @@ export default {
       this.ruleForm.pics.splice(index, 1)
     },
     handlePreview(file) {
-      console.log(file)
       this.imgurl = file.url
       this.picVisible = true
     },

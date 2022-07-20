@@ -255,7 +255,6 @@ export default {
         this.editRoles()
       } else {
         this.addRoles()
-        console.log('add')
       }
       this.closeDialog()
     },

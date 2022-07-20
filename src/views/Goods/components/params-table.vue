@@ -221,7 +221,6 @@ export default {
           item.inputVisible = false
         })
         this.attributesList = data
-        console.log(this.attributesList)
       } catch (error) {
         console.log(error)
       }

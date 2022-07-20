@@ -125,6 +125,7 @@ export default {
       return ''
     },
     async getOrdersList() {
+      this.loading = true
       try {
         const data = await getOrdersListAPI({
           ...this.page,
@@ -133,8 +134,10 @@ export default {
         this.page.pagenum = data.pagenum - 0
         this.total = data.total
         this.orders = data.goods
+        this.loading = false
       } catch (error) {
         console.log(error)
+        this.loading = false
       }
     },
     searchBtn() {
