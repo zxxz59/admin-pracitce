@@ -220,6 +220,10 @@ export default {
         this.isAdd = false
         this.ruleForm = await personalRolesAPI(id)
       } else {
+        this.ruleForm = {
+          roleName: '',
+          roleDesc: ''
+        }
         this.isAdd = true
       }
     },
@@ -267,6 +271,10 @@ export default {
     closeAssign() {
       this.assignRightDialog = false
       this.rightsTree()
+      this.ruleForm = {
+        roleName: '',
+        roleDesc: ''
+      }
     }
   },
   computed: {},
