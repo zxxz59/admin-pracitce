@@ -4,10 +4,11 @@ const ordersRouter = {
   children: [
     {
       path: 'orders',
-      component: () => import('@/views/test'),
+      component: () => import('@/views/Order'),
       name: 'orders',
       meta: {
-        title: '订单管理',
+        before: '订单管理',
+        title: '订单列表',
         icon: 'el-icon-s-claim'
       }
     }
